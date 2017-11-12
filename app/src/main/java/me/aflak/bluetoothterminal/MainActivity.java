@@ -1,5 +1,7 @@
 package me.aflak.bluetoothterminal;
 
+import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ActivityNotFoundException;
@@ -7,12 +9,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,13 +31,40 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.nispok.snackbar.Snackbar;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.aflak.bluetooth.Bluetooth;
 
 public class MainActivity extends AppCompatActivity implements Bluetooth.CommunicationCallback {
+
+
+
+
+
+    //original
     private String name;
     private Bluetooth b;
     private EditText message;
@@ -40,11 +77,14 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     private Button butten;
 
 
+    //original
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        //original
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -85,8 +125,14 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
         registered=true;
+
+        //original
+
+
     }
 
+
+    //original
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -266,4 +312,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             }
         }
     };
+
+    //original
+
 }
