@@ -1,5 +1,6 @@
 package me.aflak.bluetoothterminal;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,7 +8,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +41,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.select);
+        getLocationPermission(this, this);
 
         IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
@@ -77,6 +81,20 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
         });
 
         addDevicesToList();
+    }
+
+    public static void getLocationPermission(Context context, Activity activity) {
+//         Checking for permission ???
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Check Permissions Now
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    8034);
+        } else {
+            // permission has been granted, continue as usual
+//            showToast( "already have permission");
+        }
     }
 
     @Override

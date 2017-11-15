@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getLocationPermission(this, this);
+
 
 
         text = (TextView)findViewById(R.id.text);
@@ -269,19 +269,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
     }
 
-    public static void getLocationPermission(Context context, Activity activity) {
-//         Checking for permission ???
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Check Permissions Now
-            ActivityCompat.requestPermissions(activity,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    8034);
-        } else {
-            // permission has been granted, continue as usual
-//            showToast( "already have permission");
-        }
-    }
+
 
     /**
      * Updates fields based on data stored in the bundle.
