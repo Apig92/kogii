@@ -145,5 +145,13 @@
         android:layout_below="@+id/timeText"
         android:textColor="#ff7300" />
 
+    <TextView
+        android:id="@+id/distanceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/speedText"
+        android:layout_below="@+id/speedText"
+        android:textColor="#ff7300" />
+
 
 </RelativeLayout>

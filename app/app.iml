@@ -97,9 +97,12 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="org.mongodb:mongodb-driver-core:3.4.3@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-23.2.1" level="project" />
+    <orderEntry type="library" exported="" name="org.mongodb:bson:3.4.3@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-core-utils-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="org.jetbrains:annotations-java5:15.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="org.mongodb:mongodb-driver:3.4.3@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-core-ui-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-23.2.1" level="project" />

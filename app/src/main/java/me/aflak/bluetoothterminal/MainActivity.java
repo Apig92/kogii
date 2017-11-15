@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.mongodb.MongoClient;
+
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -156,6 +158,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
 
 
+
     //original
 
     private DatabaseHelper myDB;
@@ -219,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.timeText);
         mSpeedTextView = (TextView) findViewById(R.id.speedText);
+        mDistanceTextView = (TextView) findViewById(R.id.distanceText);
 
         // mDistanceTextView = (TextView) findViewById(R.id.distance_text);
 
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
         currentSpeed = getResources().getString(R.string.speedMessage);
-        //currentDistance= getResources().getString(R.string.distanceTravelled);
+        currentDistance= getResources().getString(R.string.distanceMessage);
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
@@ -365,6 +369,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             mRequestingLocationUpdates = true;
             setButtonsEnabledState();
             startLocationUpdates();
+
+
+
+
         }
     }
 
@@ -377,6 +385,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             mRequestingLocationUpdates = false;
             setButtonsEnabledState();
             stopLocationUpdates();
+            Distance=0.0;
+
+
+
         }
     }
 
@@ -410,28 +422,33 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
      */
     private void updateUI() {
         if (mCurrentLocation !=null) {
-            mLatitudeTextView.setText(String.format("%s: %f", mLatitudeLabel,
+            mLatitudeTextView.setText(String.format("%s %f", mLatitudeLabel,
                     mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.format("%s: %f", mLongitudeLabel,
+            mLongitudeTextView.setText(String.format("%s %f", mLongitudeLabel,
                         mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+            mLastUpdateTimeTextView.setText(String.format("%s %s", mLastUpdateTimeLabel,
                     mLastUpdateTime));
         }
         //mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
                 //mLastUpdateTime));
-        if(mCurrentLocation != null) {
-            Double currentLat = mCurrentLocation.getLatitude();
+
+        if (oldLat==null && oldLong==null)
+            oldLat=mCurrentLocation.getLatitude();
+            oldLong=mCurrentLocation.getLongitude();
+
+
+        Double currentLat = mCurrentLocation.getLatitude();
             Double currentLong = mCurrentLocation.getLongitude();
+            Distance += DistanceTravelled(oldLat,oldLong,currentLat,currentLong);
+            Distance=Double.parseDouble(new DecimalFormat("##.###").format(Distance));
             oldLat=currentLat;
             oldLong=currentLong;
-        }
-        //Distance += DistanceTravelled(oldLat,oldLong,currentLat,currentLong);
 
-
-        //mDistanceTextView.setText(String.format(currentDistance + " " + Distance));
 
         speed = mCurrentLocation.getSpeed();
         mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " m/s"));
+
+        mDistanceTextView.setText(String.format(currentDistance + " " + Distance +  " km"));
 
 
     }
@@ -481,6 +498,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mGoogleApiClient.disconnect();
 
         super.onStop();
+
     }
 
     /**
@@ -564,7 +582,11 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             unregisterReceiver(mReceiver);
             registered=false;
         }
+
+
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -788,6 +810,49 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         // Connect to db
         new dbConnect(getApplicationContext()).execute(data);
     }
+
+
+    /* Method to calculate the distance between two coordinates*/
+
+    public Double DistanceTravelled(Double lat1,Double long1,Double lat2,Double long2){
+        /*Double lat1 = Double.parseDouble(latitude1);
+        Double long1 = Double.parseDouble(longitude1);
+        Double lat2 = Double.parseDouble(latitude2);
+        Double long2 = Double.parseDouble(longitude2);*/
+
+//        final double R = 6378137;
+//        Double phi1=Math.toRadians(lat1);
+//        Double phi2=Math.toRadians(lat2);
+//        Double DeltaPhi=Math.toRadians(lat2-lat1);
+//        Double DeltaLambda=Math.toRadians(long2-long1);
+//        Double a= Math.sin(DeltaPhi/2)*Math.sin(DeltaPhi/2)+ Math.cos(phi1)*Math.cos(phi2)* Math.sin(DeltaLambda/2)*Math.sin(DeltaLambda/2);
+//        Double c= 2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+//        Double distance=R*c/1000;
+//        return distance;
+        double theta = long1 - long2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515*1.609344;
+        return (dist);
+    }
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*::  This function converts decimal degrees to radians             :*/
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*::  This function converts radians to decimal degrees             :*/
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
+
+
+
 }
 
 
@@ -834,5 +899,7 @@ class dbConnect extends AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayList>
         Toast toast = Toast.makeText(mContext, "Successfully stored all data to mongoDB", Toast.LENGTH_SHORT);
         toast.show();
     }
+
+
 
 }
