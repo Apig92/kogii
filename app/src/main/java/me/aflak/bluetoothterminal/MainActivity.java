@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
     protected TextView mDistanceTextView;
+    protected TextView mSpeedTextView;
+
+
 
 
     // Labels.
@@ -117,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     protected String mLongitudeLabel;
     protected String mLastUpdateTimeLabel;
     protected String currentDistance;
+    protected String currentSpeed;
 
 
     /**
@@ -148,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     private ScrollView scrollView;
     private boolean registered=false;
     private Button butten;
+    private Float speed;
+
 
 
     //original
@@ -212,12 +218,15 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.timeText);
-       // mDistanceTextView = (TextView) findViewById(R.id.distance_text);
+        mSpeedTextView = (TextView) findViewById(R.id.speedText);
+
+        // mDistanceTextView = (TextView) findViewById(R.id.distance_text);
 
         // Set labels.
         mLatitudeLabel = getResources().getString(R.string.latitude_label);
         mLongitudeLabel = getResources().getString(R.string.longitude_label);
         mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
+        currentSpeed = getResources().getString(R.string.speedMessage);
         //currentDistance= getResources().getString(R.string.distanceTravelled);
 
         mRequestingLocationUpdates = false;
@@ -439,6 +448,9 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
         //mDistanceTextView.setText(String.format(currentDistance + " " + Distance));
 
+        speed = mCurrentLocation.getSpeed();
+        mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " m/s"));
+
 
     }
 
@@ -527,6 +539,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        speed = mCurrentLocation.getSpeed();
         updateUI();
         //Toast.makeText(this, getResources().getString(R.string.location_updated_message),
                 //Toast.LENGTH_SHORT).show();
