@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     //original
 
     private DatabaseHelper myDB;
-    private String timestamp, lat, lon, distance;
+    private String timestamp, lat, lon, lateraldistance;
     private Handler m_handler;
     private Runnable m_handlerTask ;
 
@@ -242,45 +242,27 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //oldLat=mCurrentLocation.getLatitude();
         //oldLong=mCurrentLocation.getLongitude();
 
-        // ----------------------------------- Database --------------------------------------------
+// -------------------------- MongoDB --------------------------
+        // Create a handler for generating the time intervals
+        m_handler = new Handler();
+        m_handlerTask = new Runnable() // Runs on a different thread
+        {
+            @Override
+            public void run() {
+                //Parse all data from sqlite database to remote MongoDB
+                parseAll();
 
-//        //Create a SQLite database
-//        myDB = new DatabaseHelper(this);
-//
-//        //Save the values to these variables, they are in String as we need to store them in arraylist
-//        // later and it's less complex having it all as 1 type
-//        //Data to parse into SQLite db
-//        lat = "" + mCurrentLocation.getLatitude();
-//        lon = "" + mCurrentLocation.getLongitude();
-//        distance = "somethingsomething";
-//        //Creates timestamp, make sure in the loop we refresh the timestamp
-//        timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-//        timestamp = timestamp.toString();
-//
-//        //Add the data values above to sqlite db
-//        AddData();
-//
-//        // Create a handler for generating the time intervals
-//        m_handler = new Handler();
-//        m_handlerTask = new Runnable() // Runs on a different thread
-//        {
-//            @Override
-//            public void run() {
-//                //Parse all data from sqlite database to remote MongoDB
-//                parseAll();
-//
-//                //Clears all data from android sqlite database
-//                myDB.deleteAll();
-//
-//                // repeat above methods every x minutes. x minutes * 60 seconds * 1000 milliseconds(1second)
-//                // Change the x for different time intervals
-//                m_handler.postDelayed(m_handlerTask, 1 * 60* 1000);
-//
-//            }
-//        };
-//        m_handlerTask.run();
+                //Clears all data from android sqlite database
+                myDB.deleteAll();
 
-        // -----------------------------------------------------------------------------------------
+                // repeat above methods every x minutes. x minutes * 60 seconds * 1000 milliseconds(1second)
+                // Change the x for different time intervals
+                m_handler.postDelayed(m_handlerTask, 1 * 60* 1000);
+
+            }
+        };
+        m_handlerTask.run();
+
     }
 
     public static void getLocationPermission(Context context, Activity activity) {
@@ -621,6 +603,17 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
     public void Display(final String s){
 
+        // ----------------------------------- Database --------------------------------------------
+
+        //Create a SQLite database
+        myDB = new DatabaseHelper(this);
+
+
+
+
+
+
+        // -----------------------------------------------------------------------------------------
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -634,6 +627,24 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
                         val = matcher.group(1);
                         int result = Integer.parseInt(val);
                         result= result-100;
+
+
+                        //Save the values to these variables, they are in String as we need to store them in arraylist
+                        // later and it's less complex having it all as 1 type
+                        //Data to parse into SQLite db
+                        lat = "" + mCurrentLocation.getLatitude();
+                        lon = "" + mCurrentLocation.getLongitude();
+
+                        //Creates timestamp, make sure in the loop we refresh the timestamp
+                        timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+                        timestamp = timestamp.toString();
+
+                        lateraldistance = Double.toString(result);
+
+                        //Add the data values above to sqlite db
+                        AddData();
+
+
                         if (result <= 150) {
                             text.append("\n"+result + " cm SIDE CAR SHIIIIIIT!\n");
                         }
@@ -760,7 +771,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     public void AddData(){
 
         //Insert to android database
-        boolean insertToDB = myDB.insertData(lat, lon, distance, timestamp);
+        boolean insertToDB = myDB.insertData(lat, lon, lateraldistance, timestamp);
 
         //Displays message to state if successful
         if (insertToDB){
@@ -800,7 +811,7 @@ class dbConnect extends AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayList>
 
         for(List<String> innerList : data) {
             String yes = innerList.get(0) + innerList.get(1) + innerList.get(2) + innerList.get(3);
-            Log.d("\nArrayFeed", yes+"\n\n\n");
+//            Log.d("\nArrayFeed", yes+"\n\n\n")
 
             //Creates mongodb document and stores the doc to a collection
             Document document = new Document();
