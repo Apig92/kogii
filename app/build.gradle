@@ -29,6 +29,7 @@ dependencies {
 
     compile 'com.google.android.gms:play-services-location:11.0.0'
 
+    compile 'org.mongodb:mongodb-driver:3.4.3'
 
 
 

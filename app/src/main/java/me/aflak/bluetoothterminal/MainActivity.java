@@ -1,6 +1,22 @@
 package me.aflak.bluetoothterminal;
 
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
+import com.mongodb.MongoClient;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -136,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
     //original
 
-
+    private DatabaseHelper myDB;
+    private String timestamp, lat, lon, distance;
+    private Handler m_handler;
+    private Runnable m_handlerTask ;
 
 
     @Override
@@ -214,7 +233,45 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //oldLat=mCurrentLocation.getLatitude();
         //oldLong=mCurrentLocation.getLongitude();
 
+        // ----------------------------------- Database --------------------------------------------
 
+//        //Create a SQLite database
+//        myDB = new DatabaseHelper(this);
+//
+//        //Save the values to these variables, they are in String as we need to store them in arraylist
+//        // later and it's less complex having it all as 1 type
+//        //Data to parse into SQLite db
+//        lat = "" + mCurrentLocation.getLatitude();
+//        lon = "" + mCurrentLocation.getLongitude();
+//        distance = "somethingsomething";
+//        //Creates timestamp, make sure in the loop we refresh the timestamp
+//        timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+//        timestamp = timestamp.toString();
+//
+//        //Add the data values above to sqlite db
+//        AddData();
+//
+//        // Create a handler for generating the time intervals
+//        m_handler = new Handler();
+//        m_handlerTask = new Runnable() // Runs on a different thread
+//        {
+//            @Override
+//            public void run() {
+//                //Parse all data from sqlite database to remote MongoDB
+//                parseAll();
+//
+//                //Clears all data from android sqlite database
+//                myDB.deleteAll();
+//
+//                // repeat above methods every x minutes. x minutes * 60 seconds * 1000 milliseconds(1second)
+//                // Change the x for different time intervals
+//                m_handler.postDelayed(m_handlerTask, 1 * 60* 1000);
+//
+//            }
+//        };
+//        m_handlerTask.run();
+
+        // -----------------------------------------------------------------------------------------
     }
 
     public static void getLocationPermission(Context context, Activity activity) {
@@ -686,5 +743,72 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     };
 
     //original
+    //insert data to local sqlite android database
+    public void AddData(){
+
+        //Insert to android database
+        boolean insertToDB = myDB.insertData(lat, lon, distance, timestamp);
+
+        //Displays message to state if successful
+        if (insertToDB){
+            Toast.makeText(MainActivity.this, "Data stored to android database", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(MainActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    //Stores data to remote mongodb database
+    public void parseAll(){
+        ArrayList data = myDB.getAll();
+
+        // Connect to db
+        new dbConnect(getApplicationContext()).execute(data);
+    }
+}
+
+
+class dbConnect extends AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayList>  {
+
+    private Context mContext;
+
+    public dbConnect (Context context){
+        this.mContext = context;
+    }
+
+    @Override
+    protected ArrayList<String> doInBackground(ArrayList<ArrayList<String>>... passing) {
+
+        //Create connection to MongoDb on AWS
+        MongoClient mongoClient = new MongoClient("54.190.29.49", 27017);
+        MongoDatabase database = mongoClient.getDatabase("KogiiDB");
+        MongoCollection<Document> collection = database.getCollection("LateralData");
+
+        ArrayList<ArrayList<String>> data = passing[0];
+
+        for(List<String> innerList : data) {
+            String yes = innerList.get(0) + innerList.get(1) + innerList.get(2) + innerList.get(3);
+            Log.d("\nArrayFeed", yes+"\n\n\n");
+
+            //Creates mongodb document and stores the doc to a collection
+            Document document = new Document();
+            document.put("lat", innerList.get(0));
+            document.put("lon", innerList.get(1));
+            document.put("distance", innerList.get(2));
+            document.put("timestamp", innerList.get(3));
+
+            collection.insertOne(document); //Insert the doc into mongodb
+        }
+        mongoClient.close();
+
+
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList result) {
+
+        Toast toast = Toast.makeText(mContext, "Successfully stored all data to mongoDB", Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
 }
