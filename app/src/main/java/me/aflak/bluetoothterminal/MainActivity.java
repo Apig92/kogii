@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 import com.mongodb.MongoClient;
 
@@ -173,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
 
 
 
@@ -417,7 +420,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
 
         speed = mCurrentLocation.getSpeed();
-        mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " m/s"));
+        speed= speed*(float)3.6;
+        mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " km/h"));
 
         mDistanceTextView.setText(String.format(currentDistance + " " + Distance +  " km"));
 
