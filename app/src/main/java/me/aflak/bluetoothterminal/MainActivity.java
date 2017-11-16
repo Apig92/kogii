@@ -246,26 +246,9 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //oldLat=mCurrentLocation.getLatitude();
         //oldLong=mCurrentLocation.getLongitude();
 
-// -------------------------- MongoDB --------------------------
-        // Create a handler for generating the time intervals
-        m_handler = new Handler();
-        m_handlerTask = new Runnable() // Runs on a different thread
-        {
-            @Override
-            public void run() {
-                //Parse all data from sqlite database to remote MongoDB
-                parseAll();
+        //Create a SQLite database
+        myDB = new DatabaseHelper(this);
 
-                //Clears all data from android sqlite database
-                myDB.deleteAll();
-
-                // repeat above methods every x minutes. x minutes * 60 seconds * 1000 milliseconds(1second)
-                // Change the x for different time intervals
-                m_handler.postDelayed(m_handlerTask, 1 * 60* 1000);
-
-            }
-        };
-        m_handlerTask.run();
 
     }
 
@@ -486,7 +469,11 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mGoogleApiClient.disconnect();
 
         super.onStop();
+        //Parse all data from sqlite database to remote MongoDB
+        parseAll();
 
+        //Clears all data from android sqlite database
+        myDB.deleteAll();
     }
 
     /**
@@ -642,8 +629,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
                         //Save the values to these variables, they are in String as we need to store them in arraylist
                         // later and it's less complex having it all as 1 type
                         //Data to parse into SQLite db
-                        lat = "" + mCurrentLocation.getLatitude();
-                        lon = "" + mCurrentLocation.getLongitude();
+                        lat = Double.toString(mCurrentLocation.getLatitude());
+                        lon = Double.toString(mCurrentLocation.getLongitude());
 
                         //Creates timestamp, make sure in the loop we refresh the timestamp
                         timestamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
@@ -784,11 +771,11 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         boolean insertToDB = myDB.insertData(lat, lon, lateraldistance, timestamp);
 
         //Displays message to state if successful
-        if (insertToDB){
-            Toast.makeText(MainActivity.this, "Data stored to android database", Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(MainActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
-        }
+//        if (insertToDB){
+//            Toast.makeText(MainActivity.this, "Data stored to android database", Toast.LENGTH_LONG).show();
+//        }else{
+//            Toast.makeText(MainActivity.this, "Unsuccessful", Toast.LENGTH_LONG).show();
+//        }
     }
 
     //Stores data to remote mongodb database
