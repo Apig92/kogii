@@ -109,20 +109,20 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     // UI Widgets.
     //protected Button mStartUpdatesButton;
     //protected Button mStopUpdatesButton;
-    protected TextView mLastUpdateTimeTextView;
-    protected TextView mLatitudeTextView;
-    protected TextView mLongitudeTextView;
-    protected TextView mDistanceTextView;
+//    protected TextView mLastUpdateTimeTextView;
+//    protected TextView mLatitudeTextView;
+//    protected TextView mLongitudeTextView;
+    //protected TextView mDistanceTextView;
     protected TextView mSpeedTextView;
 
 
 
 
     // Labels.
-    protected String mLatitudeLabel;
-    protected String mLongitudeLabel;
-    protected String mLastUpdateTimeLabel;
-    protected String currentDistance;
+//    protected String mLatitudeLabel;
+//    protected String mLongitudeLabel;
+//    protected String mLastUpdateTimeLabel;
+    //protected String currentDistance;
     protected String currentSpeed;
 
 
@@ -138,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     protected String mLastUpdateTime;
 
     /* My variables, for distance and lat and long */
-    private Double oldLat;
-    private Double oldLong;
-    private Double Distance=0.0;
-    private boolean starting=false;
+//    private Double oldLat;
+//    private Double oldLong;
+//    private Double Distance=0.0;
+//    private boolean starting=false;
 
 
 
@@ -222,20 +222,20 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         // Locate the UI widgets.
         //mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
         //mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
-        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
-        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
-        mLastUpdateTimeTextView = (TextView) findViewById(R.id.timeText);
+//        mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
+//        mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
+//        mLastUpdateTimeTextView = (TextView) findViewById(R.id.timeText);
         mSpeedTextView = (TextView) findViewById(R.id.speedText);
-        mDistanceTextView = (TextView) findViewById(R.id.distanceText);
+        //mDistanceTextView = (TextView) findViewById(R.id.distanceText);
 
         // mDistanceTextView = (TextView) findViewById(R.id.distance_text);
 
         // Set labels.
-        mLatitudeLabel = getResources().getString(R.string.latitude_label);
-        mLongitudeLabel = getResources().getString(R.string.longitude_label);
-        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
+//        mLatitudeLabel = getResources().getString(R.string.latitude_label);
+//        mLongitudeLabel = getResources().getString(R.string.longitude_label);
+//        mLastUpdateTimeLabel = getResources().getString(R.string.last_update_time_label);
         currentSpeed = getResources().getString(R.string.speedMessage);
-        currentDistance= getResources().getString(R.string.distanceMessage);
+        //currentDistance= getResources().getString(R.string.distanceMessage);
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
@@ -409,34 +409,34 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
      */
     private void updateUI() {
         if (mCurrentLocation !=null) {
-            mLatitudeTextView.setText(String.format("%s %f", mLatitudeLabel,
-                    mCurrentLocation.getLatitude()));
-            mLongitudeTextView.setText(String.format("%s %f", mLongitudeLabel,
-                    mCurrentLocation.getLongitude()));
-            mLastUpdateTimeTextView.setText(String.format("%s %s", mLastUpdateTimeLabel,
-                    mLastUpdateTime));
+//            mLatitudeTextView.setText(String.format("%s %f", mLatitudeLabel,
+//                    mCurrentLocation.getLatitude()));
+//            mLongitudeTextView.setText(String.format("%s %f", mLongitudeLabel,
+//                    mCurrentLocation.getLongitude()));
+//            mLastUpdateTimeTextView.setText(String.format("%s %s", mLastUpdateTimeLabel,
+//                    mLastUpdateTime));
 
             //mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
             //mLastUpdateTime));
 
-            if (oldLat == null && oldLong == null)
-                oldLat = mCurrentLocation.getLatitude();
-                oldLong = mCurrentLocation.getLongitude();
+//            if (oldLat == null && oldLong == null)
+//                oldLat = mCurrentLocation.getLatitude();
+//                oldLong = mCurrentLocation.getLongitude();
 
 
             Double currentLat = mCurrentLocation.getLatitude();
             Double currentLong = mCurrentLocation.getLongitude();
-            Distance += DistanceTravelled(oldLat, oldLong, currentLat, currentLong);
-            Distance = Double.parseDouble(new DecimalFormat("##.###").format(Distance));
-            oldLat = currentLat;
-            oldLong = currentLong;
+//            Distance += DistanceTravelled(oldLat, oldLong, currentLat, currentLong);
+//            Distance = Double.parseDouble(new DecimalFormat("##.###").format(Distance));
+//            oldLat = currentLat;
+//            oldLong = currentLong;
 
 
             speed = mCurrentLocation.getSpeed();
             speed = speed * (float) 3.6;
             mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " km/h"));
 
-            mDistanceTextView.setText(String.format(currentDistance + " " + Distance + " km"));
+           // mDistanceTextView.setText(String.format(currentDistance + " " + Distance + " km"));
 
         }
 

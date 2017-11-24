@@ -11,7 +11,7 @@
     <string name="latitude_label">Latitude: </string>
     <string name="longitude_label">Longitude: </string>
     <string name="last_update_time_label">Last update: </string>
-    <string name="speedMessage">Current speed: </string>
+    <string name="speedMessage"> </string>
     <string name="distanceMessage">Current distance: </string>
 
 
