@@ -4,7 +4,10 @@ package me.aflak.bluetoothterminal;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+
+import android.app.Fragment;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -174,7 +177,17 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //original
 
         super.onCreate(savedInstanceState);
+
+        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
+        // API.
+        buildGoogleApiClient();
         setContentView(R.layout.activity_main);
+
+
+
+
+
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
@@ -243,9 +256,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         // Update values using data stored in the Bundle.
         updateValuesFromBundle(savedInstanceState);
 
-        // Kick off the process of building a GoogleApiClient and requesting the LocationServices
-        // API.
-        buildGoogleApiClient();
+
 
         //oldLat=mCurrentLocation.getLatitude();
         //oldLong=mCurrentLocation.getLongitude();
@@ -345,6 +356,13 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+
     }
 
     /**
@@ -472,6 +490,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         // Within {@code onPause()}, we pause location updates, but leave the
         // connection to GoogleApiClient intact.  Here, we resume receiving
         // location updates if the user has requested them.
+
+
 
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -852,6 +872,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
+
 
 
 
