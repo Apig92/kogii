@@ -107,8 +107,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     protected Location mCurrentLocation;
 
     // UI Widgets.
-    protected Button mStartUpdatesButton;
-    protected Button mStopUpdatesButton;
+    //protected Button mStartUpdatesButton;
+    //protected Button mStopUpdatesButton;
     protected TextView mLastUpdateTimeTextView;
     protected TextView mLatitudeTextView;
     protected TextView mLongitudeTextView;
@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     private Double oldLat;
     private Double oldLong;
     private Double Distance=0.0;
+    private boolean starting=false;
 
 
 
@@ -219,8 +220,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //original
 
         // Locate the UI widgets.
-        mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
-        mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
+        //mStartUpdatesButton = (Button) findViewById(R.id.start_updates_button);
+        //mStopUpdatesButton = (Button) findViewById(R.id.stop_updates_button);
         mLatitudeTextView = (TextView) findViewById(R.id.latitude_text);
         mLongitudeTextView = (TextView) findViewById(R.id.longitude_text);
         mLastUpdateTimeTextView = (TextView) findViewById(R.id.timeText);
@@ -253,6 +254,14 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         myDB = new DatabaseHelper(this);
 
 
+        //Location updates
+
+        mRequestingLocationUpdates = true;
+
+
+        if(mCurrentLocation!=null)
+            startLocationUpdates();
+
     }
 
 
@@ -270,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             if (savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(
                         REQUESTING_LOCATION_UPDATES_KEY);
-                setButtonsEnabledState();
+                //setButtonsEnabledState();
             }
 
             // Update the value of mCurrentLocation from the Bundle and update the UI to show the
@@ -285,6 +294,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY)) {
                 mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
+
+
             updateUI();
         }
     }
@@ -303,6 +314,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
                 .addApi(LocationServices.API)
                 .build();
         createLocationRequest();
+
+
     }
 
     /**
@@ -338,33 +351,33 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
      * Handles the Start Updates button and requests start of location updates. Does nothing if
      * updates have already been requested.
      */
-    public void startUpdatesButtonHandler(View view) {
-        if (!mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = true;
-            setButtonsEnabledState();
-            startLocationUpdates();
-
-
-
-
-        }
-    }
+//    public void startUpdatesButtonHandler(View view) {
+//        if (!mRequestingLocationUpdates) {
+//            mRequestingLocationUpdates = true;
+//            setButtonsEnabledState();
+//            startLocationUpdates();
+//
+//
+//
+//
+//        }
+//    }
 
     /**
      * Handles the Stop Updates button, and requests removal of location updates. Does nothing if
      * updates were not previously requested.
      */
-    public void stopUpdatesButtonHandler(View view) {
-        if (mRequestingLocationUpdates) {
-            mRequestingLocationUpdates = false;
-            setButtonsEnabledState();
-            stopLocationUpdates();
-            Distance=0.0;
-
-
-
-        }
-    }
+//    public void stopUpdatesButtonHandler(View view) {
+//        if (mRequestingLocationUpdates) {
+//            mRequestingLocationUpdates = false;
+//            setButtonsEnabledState();
+//            stopLocationUpdates();
+//            Distance=0.0;
+//
+//
+//
+//        }
+//    }
 
     /**
      * Requests location updates from the FusedLocationApi.
@@ -381,15 +394,15 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
      * if the user is not requesting location updates. The Stop Updates button is enabled if the
      * user is requesting location updates.
      */
-    private void setButtonsEnabledState() {
-        if (mRequestingLocationUpdates) {
-            mStartUpdatesButton.setEnabled(false);
-            mStopUpdatesButton.setEnabled(true);
-        } else {
-            mStartUpdatesButton.setEnabled(true);
-            mStopUpdatesButton.setEnabled(false);
-        }
-    }
+//    private void setButtonsEnabledState() {
+//        if (mRequestingLocationUpdates) {
+//            mStartUpdatesButton.setEnabled(false);
+//            mStopUpdatesButton.setEnabled(true);
+//        } else {
+//            mStartUpdatesButton.setEnabled(true);
+//            mStopUpdatesButton.setEnabled(false);
+//        }
+//    }
 
     /**
      * Updates the latitude, the longitude, and the last location time in the UI.
@@ -399,31 +412,33 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
             mLatitudeTextView.setText(String.format("%s %f", mLatitudeLabel,
                     mCurrentLocation.getLatitude()));
             mLongitudeTextView.setText(String.format("%s %f", mLongitudeLabel,
-                        mCurrentLocation.getLongitude()));
+                    mCurrentLocation.getLongitude()));
             mLastUpdateTimeTextView.setText(String.format("%s %s", mLastUpdateTimeLabel,
                     mLastUpdateTime));
-        }
-        //mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
-                //mLastUpdateTime));
 
-        if (oldLat==null && oldLong==null)
-            oldLat=mCurrentLocation.getLatitude();
-            oldLong=mCurrentLocation.getLongitude();
+            //mLastUpdateTimeTextView.setText(String.format("%s: %s", mLastUpdateTimeLabel,
+            //mLastUpdateTime));
+
+            if (oldLat == null && oldLong == null)
+                oldLat = mCurrentLocation.getLatitude();
+                oldLong = mCurrentLocation.getLongitude();
 
 
-        Double currentLat = mCurrentLocation.getLatitude();
+            Double currentLat = mCurrentLocation.getLatitude();
             Double currentLong = mCurrentLocation.getLongitude();
-            Distance += DistanceTravelled(oldLat,oldLong,currentLat,currentLong);
-            Distance=Double.parseDouble(new DecimalFormat("##.###").format(Distance));
-            oldLat=currentLat;
-            oldLong=currentLong;
+            Distance += DistanceTravelled(oldLat, oldLong, currentLat, currentLong);
+            Distance = Double.parseDouble(new DecimalFormat("##.###").format(Distance));
+            oldLat = currentLat;
+            oldLong = currentLong;
 
 
-        speed = mCurrentLocation.getSpeed();
-        speed= speed*(float)3.6;
-        mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " km/h"));
+            speed = mCurrentLocation.getSpeed();
+            speed = speed * (float) 3.6;
+            mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " km/h"));
 
-        mDistanceTextView.setText(String.format(currentDistance + " " + Distance +  " km"));
+            mDistanceTextView.setText(String.format(currentDistance + " " + Distance + " km"));
+
+        }
 
 
     }
@@ -445,6 +460,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
+        mRequestingLocationUpdates = true;
+        if(mCurrentLocation!=null)
+            startLocationUpdates();
     }
 
     @Override
@@ -478,6 +497,10 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
         //Clears all data from android sqlite database
         myDB.deleteAll();
+
+//        mRequestingLocationUpdates = false;
+//        stopLocationUpdates();
+//        Distance=0.0;
     }
 
     /**
