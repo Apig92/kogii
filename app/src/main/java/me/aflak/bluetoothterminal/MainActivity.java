@@ -458,6 +458,8 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
             speed = mCurrentLocation.getSpeed();
             speed = speed * (float) 3.6;
+            speed = (float)((int)( speed *100f ))/100f;
+
             mSpeedTextView.setText(String.format(currentSpeed + " " + speed + " km/h"));
 
            // mDistanceTextView.setText(String.format(currentDistance + " " + Distance + " km"));

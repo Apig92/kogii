@@ -103,6 +103,7 @@
     <orderEntry type="library" exported="" name="com.android.support:support-core-utils-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="org.jetbrains:annotations-java5:15.0@jar" level="project" />
     <orderEntry type="library" exported="" name="org.mongodb:mongodb-driver:3.4.3@jar" level="project" />
+    <orderEntry type="library" exported="" name="__local_jars__:C.\Users\pigna\Desktop\kogii\app\libs\mongo-java-driver-3.2.0-SNAPSHOT.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-23.2.1" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:support-core-ui-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-23.2.1" level="project" />
