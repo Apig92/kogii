@@ -658,13 +658,13 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //Create a SQLite database
         myDB = new DatabaseHelper(this);
 
-        for (int i = 0; i< 10; i++){
-            lat = i+"";
-            lon = i+"";
-            lateraldistance = i +"";
-            timestamp = i+"";
-            AddData();
-        }
+//        for (int i = 0; i< 10; i++){
+//            lat = i+"";
+//            lon = i+"";
+//            lateraldistance = i +"";
+//            timestamp = i+"";
+//            AddData();
+//        }
 
 
 
