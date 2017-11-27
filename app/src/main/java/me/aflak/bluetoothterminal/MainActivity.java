@@ -1,6 +1,10 @@
 package me.aflak.bluetoothterminal;
 
 
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClientURI;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
@@ -20,6 +24,7 @@ import com.mongodb.MongoClient;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -183,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         buildGoogleApiClient();
         setContentView(R.layout.activity_main);
 
+        //Testing
 
 
 
@@ -652,7 +658,13 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         //Create a SQLite database
         myDB = new DatabaseHelper(this);
 
-
+        for (int i = 0; i< 10; i++){
+            lat = i+"";
+            lon = i+"";
+            lateraldistance = i +"";
+            timestamp = i+"";
+            AddData();
+        }
 
 
 
@@ -891,17 +903,32 @@ class dbConnect extends AsyncTask<ArrayList<ArrayList<String>>, Void, ArrayList>
     protected ArrayList<String> doInBackground(ArrayList<ArrayList<String>>... passing) {
 
         //Create connection to MongoDb on AWS
-        MongoClient mongoClient = new MongoClient("54.190.29.49", 27017);
+        MongoCredential credential = MongoCredential.createCredential("Kogii", "admin", "Kogii".toCharArray());
+        MongoClient mongoClient = new MongoClient(new ServerAddress("54.190.29.49", 27017), Arrays.asList(credential));
+
+
+//        MongoClient mongoClient = new MongoClient("54.190.29.49", 27017);
         MongoDatabase database = mongoClient.getDatabase("KogiiDB");
+
         MongoCollection<Document> collection = database.getCollection("LateralData");
 
         ArrayList<ArrayList<String>> data = passing[0];
+
 
         for(List<String> innerList : data) {
             String yes = innerList.get(0) + innerList.get(1) + innerList.get(2) + innerList.get(3);
 //            Log.d("\nArrayFeed", yes+"\n\n\n")
 
-            //Creates mongodb document and stores the doc to a collection
+
+//            //Creates mongodb document and stores the doc to a collection
+//            Document document = new Document();
+//            document.put("lat", "test");
+//            document.put("lon", "test");
+//            document.put("distance", "test");
+//            document.put("timestamp", "test");
+
+
+//            //Creates mongodb document and stores the doc to a collection
             Document document = new Document();
             document.put("lat", innerList.get(0));
             document.put("lon", innerList.get(1));
