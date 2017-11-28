@@ -700,11 +700,12 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
                         lateraldistance = Double.toString(result);
 
                         //Add the data values above to sqlite db
-                        AddData();
+
 
 
                         if (result <= 150) {
                             text.append("\n"+result + " cm SIDE CAR SHIIIIIIT!\n");
+                            AddData();
                         }
                     }
                 }else{
