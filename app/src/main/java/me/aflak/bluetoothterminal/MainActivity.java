@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.mongodb.MongoClient;
 
@@ -122,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 //    protected TextView mLongitudeTextView;
     //protected TextView mDistanceTextView;
     protected TextView mSpeedTextView;
+    protected ImageView kogii;
 
 
 
@@ -207,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
         send = (Button)findViewById(R.id.send);
         butten= (Button)findViewById(R.id.button2);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
+        kogii = (ImageView) findViewById(R.id.imageView2);
 
         text.setMovementMethod(new ScrollingMovementMethod());
         send.setEnabled(false);
@@ -278,6 +281,19 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
         if(mCurrentLocation!=null)
             startLocationUpdates();
+
+
+        kogii.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                intent.setData(Uri.parse("http://www.kogii.bike"));
+                startActivity(intent);
+            }
+        });
+
+
 
     }
 
@@ -705,6 +721,9 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
 
                         if (result <= 150) {
                             text.append("\n"+result + " cm SIDE CAR SHIIIIIIT!\n");
+
+                            Toast.makeText(MainActivity.this, "Distance "+lateraldistance+ ",lat "+lat+ " ,lon " + lon + " , time "+timestamp, Toast.LENGTH_LONG).show();
+
                             AddData();
                         }
                     }
@@ -887,8 +906,6 @@ public class MainActivity extends AppCompatActivity implements Bluetooth.Communi
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
-
-
 
 
 }
